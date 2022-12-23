@@ -1,0 +1,125 @@
+{% load static %}
+<html>
+  <head>
+    <title>掲示板</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static 'css/top.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'css' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../media/images/app_icon.png"> 
+  </head>
+
+  <body>
+    {% if user.is_authenticated %}
+    <header>
+      <div class="inner">
+        <div class="inner_color">
+          <a href="{% url 'home' %}"><img src="../../../media/images/Compassアイコン黒.png" height="32px"></a>
+          <p></p>
+        </div>
+      
+        <div class="h-menu">
+          <input id="h-menu_checkbox" class="h-menuCheckbox" type="checkbox">
+          <label class="h-menu_icon" for="h-menu_checkbox"><span class="hamburger-icon"></span></label>
+          <label id="h-menu_black" class="h-menuCheckbox" for="h-menu_checkbox"></label>
+          <div id="h-menu_content">
+            <ul>
+              <li>
+                {% if user.is_authenticated %}
+                {% if user.userinfo.icon %}
+                <img src="../../../media/{{ user.userinfo.icon }}" class="icon">
+                {% else %}
+                <img src="{% static 'images/user_icon.png' %}" class="user-icon">
+                {% endif %}
+                <div class="user">
+                  <p>学籍番号: {{ user.username }}</p>
+                  <p>ユーザー名: {{ user.userinfo.username }}</p>
+                </div>
+                {% endif %}
+              </li>
+              <li><a href="{% url 'top' %}"><img src="..\media\images\top.png" width="48" height="48"><p>掲示板</p></a></li>
+              <li><a href="{% url 'mypage' %}"><img src="..\media\images\時間割.png" width="48" height="48"><p>時間割</p></a></li>
+              <li><a href="{% url 'pub' %}"><img src="..\media\images\ondemando.png" width="48" height="48"><p>オンデマンド</p></a></li>
+              <li><a href="{% url 'chat' %}"><img src="..\media\images\ルーズリーフのノートアイコン.png" width="48" height="48"><p>DM機能</p></a></li>
+              <li><a href="{% url 'priv' %}"><img src="..\media\images\設定.png" width="48" height="48"><p>設定</p></a></li>
+              <li><a href="{% url 'logout' %}">ログアウト</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+      <div class="header-body">
+        <h1>掲示板</h1>
+      </div>
+
+      <form action="{% url 'index' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3>学籍番号: {{ user }}</h3>
+        <div>
+          <div>
+            <label for="titleInput">タイトル</label>
+            <input id="titleInput" name="title" type="text" placeholder="Input name">
+          </div>
+          <div>
+            <label for="textInput">内容</label>
+            <textarea id="textInput" name="text" cols="30" rows="10" ></textarea>
+          </div>
+          <div>
+            <label for="image">画像</label>
+            <input type="file" name="image" accept="image/jpeg, image/png">
+          </div>
+          <div>
+            <label for="checkbox">匿名</label>
+            <input type="checkbox" name="checkbox">
+          </div>
+
+        </div>
+        <div>
+          <button type="submit" id="button">投稿</button>
+        </div>
+      </form>
+
+      <br>
+      {% if articles %}
+        {% for article in articles %}
+          <div class="article">
+            <h5>title:{{ article.title }}</h5>
+            {% if article.anonymity %}
+            <p>投稿者: {{ article.user }}[{{ article.user.userinfo.username}}]</p>
+            {% else %}
+            <p>投稿者: 匿名</p>
+            {% endif %}
+            {{ article.body | linebreaksbr }}
+            <diV>
+              {% if article.image %}
+              <img src="{{ article.image.url }}" style="width: 100px;height:auto">
+              {% endif %}
+            </diV>
+            <small>[{{ article.posted_at }}]</small>
+            <div>
+              <a href="{% url 'like' article.id %}">
+                <img src="..\media\images\heart.png" width="16" height="16">
+              </a>
+                {{ article.like }}
+              
+            </div>
+            <a href="{% url 'detail' article.id %}">詳細</a>
+            <br>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p> 投稿はありません</p>
+      {% endif %}
+
+      <p><a href="{% url 'rank' %}" id="rank">Rank</a></p>
+
+    </main>
+    {% else %}
+    <p>You are not logged in.</p>
+    <p><a href="{% url 'login' %}">login</a></p>
+    <p><a href = "{% url 'signup' %}">アカウント作成</a></p>
+    {% endif %}
+  </body>
+</html>
+

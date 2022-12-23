@@ -1,0 +1,19 @@
+.timetable {
+    border: 1px solid;
+    color: #2e7c40;
+}
+
+.timetable td {
+    background: #F4FDE8;
+}
+
+
+h1 {
+    color: aquamarine;
+}
+
+.u-icon {
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1.5px solid #eee;
+}
